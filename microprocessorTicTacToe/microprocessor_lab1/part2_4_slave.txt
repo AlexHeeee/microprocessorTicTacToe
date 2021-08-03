@@ -1,0 +1,27 @@
+#include <Wire.h>
+
+
+int LED = 9; //define the D9 digital pin for LED brick
+void setup()
+{
+  Wire.begin(4);         // join i2c bus with address #4
+  pinMode(LED,OUTPUT); //set the LED pin for digital output
+  Wire.onReceive(receiveEvent); // register event
+  Serial.begin(9600);       // start serial for output
+}
+void loop()
+{
+  delay(100);
+}
+// function that executes whenever data is received from master
+// this function is registered as an event, see setup()
+void receiveEvent(int howMany)
+{ 
+  int on = Wire.read();      // receive byte as an integer
+    Serial.println(on);
+  if(on)
+   digitalWrite(LED,HIGH); // light the LED
+  else
+   digitalWrite(LED,LOW); // turn off the LED
+
+}

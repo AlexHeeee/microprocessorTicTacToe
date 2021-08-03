@@ -1,0 +1,25 @@
+#include <Wire.h>
+
+int Button = 10; //define the D10 digital pin for button brick
+
+void setup()
+{
+  Wire.begin();         // join i2c bus (address optional for master)
+  Serial.begin(9600);       // start serial for output
+
+
+  pinMode(Button,INPUT); //set the Button pin for digital input
+}
+
+byte on = false;
+
+void loop()
+{
+  Wire.beginTransmission(4);  // transmit to device #4
+  if (digitalRead(Button)) // if button press
+      on = true;
+  else
+      on = false;
+  Wire.write(on);        // sends one byte
+   Wire.endTransmission();     // stop transmitting
+}

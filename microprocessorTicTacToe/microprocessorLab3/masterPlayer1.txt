@@ -1,0 +1,102 @@
+#include<Wire.h>
+
+char a[16],action;
+ int i=0;
+ 
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  for(int i=0;i<16;i++)
+  a[i]='*';
+  a[0]='o';
+  print(a);
+  Serial.print("Please enter four land mine's postion(1-14) for player2:\n");
+  
+  Wire.begin();
+}
+
+//player1
+void loop(){
+  if(Serial.available()>0){
+  int tran_e = Serial.parseInt();
+  Serial.println(tran_e);
+  int tran_b = Serial.parseInt();
+  Serial.println(tran_b);
+  int tran_c = Serial.parseInt();
+  Serial.println(tran_c);
+  int tran_d = Serial.parseInt();
+  Serial.println(tran_d);
+
+ Wire.beginTransmission(4);
+ Wire.write(tran_e);
+ Wire.write(tran_b);
+ Wire.write(tran_c);
+ Wire.write(tran_d);
+ Wire.endTransmission();
+  Serial.print("wait for player2 setting up the initial mine field for you");
+  delay(8000); //waits for 8 seconds
+  Wire.requestFrom(4,8);
+
+while(true){
+  if(Wire.available())
+  {
+int e= Wire.read();
+ int b=Wire.read();
+ int c=Wire.read();
+ int d=Wire.read();
+
+ serialFlush();
+ while(true){
+   if(Serial.available()>0){
+  action=Serial.read();
+  if(action=='w'&&i>=4){
+  a[i]='*';
+  i-=4;
+  a[i]='o';
+  print(a);
+  }
+  if(action=='s'&&i<=11){
+    a[i]='*';
+    i+=4;
+    a[i]='o';
+    print(a);
+    }
+  if(action=='a'&&i!=0&&i!=4&&i!=8&&i!=12){
+    a[i]='*';
+    i-=1;
+    a[i]='o';
+    print(a);
+    }
+    if(action=='d'&&i!=3&&i!=7&&i!=11&&i!=15){
+    a[i]='*';
+    i+=1;
+    a[i]='o';
+    print(a);}
+    if(i==e||i==b||i==c||i==d){
+    Serial.print("you are a loser");
+    delay(10000);}
+    if(i==15){
+    Serial.print("you win");
+    delay(10000);}
+ }
+ } 
+    }
+  }
+  }
+}
+
+void print(char a[])
+{
+    for(int i=0;i<16;i++){
+    if((i+1)%4==0)
+    Serial.println(a[i]);
+    else
+    Serial.print(a[i]);
+    }
+  }
+
+void serialFlush(){
+  while(Serial.available() > 0) {
+    char t = Serial.read();
+  }
+}   

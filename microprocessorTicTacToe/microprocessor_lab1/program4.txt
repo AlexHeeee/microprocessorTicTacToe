@@ -1,0 +1,22 @@
+int LED = 9; //define the D9 digital pin for LED brick
+
+void setup()
+
+{
+
+ pinMode(LED,OUTPUT); //set the LED pin for digital output
+
+
+}
+
+void loop()
+
+{
+
+ digitalWrite(LED, HIGH);   // turn the LED on (HIGH is the voltage level)
+
+  delay(2000);                      // wait for two second
+
+  digitalWrite(LED, LOW);    // turn the LED off by making the voltage LOW
+  delay(1000);
+}
