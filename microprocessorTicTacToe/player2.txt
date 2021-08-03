@@ -1,0 +1,176 @@
+const int ledPin = 12; // the pin that the LED is attached to
+int incomingByte;      // a variable to read incoming serial data into
+char squareForGame[10] = { 'o', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+int player = 1, i, choice;
+char mark;
+
+void setup() {
+  // initialize serial communication:
+  Serial.begin(9600);
+    board();
+}
+
+void loop() {
+  if(player % 2 == 0)
+    Serial.print("enter a number: ");
+  else
+     Serial.print("wait for your rival to move");
+  // see if there's incoming serial data:
+  while(true){
+  if (Serial.available() > 0) {
+    choice = Serial.read();
+    
+    if(player % 2 == 1) mark = 'X'; //player 1 use X
+    else mark = 'O';
+    
+            if (choice == '1' && squareForGame[1] == '1')
+            squareForGame[1] = mark;
+            
+        else if (choice == '2' && squareForGame[2] == '2')
+            squareForGame[2] = mark;
+            
+        else if (choice == '3' && squareForGame[3] == '3')
+            squareForGame[3] = mark;
+            
+        else if (choice == '4' && squareForGame[4] == '4')
+            squareForGame[4] = mark;
+            
+        else if (choice == '5' && squareForGame[5] == '5')
+            squareForGame[5] = mark;
+            
+        else if (choice == '6' && squareForGame[6] == '6')
+            squareForGame[6] = mark;
+            
+        else if (choice == '7' && squareForGame[7] == '7')
+            squareForGame[7] = mark;
+            
+        else if (choice == '8' && squareForGame[8] == '8')
+            squareForGame[8] = mark;
+            
+        else if (choice == '9' && squareForGame[9] == '9')
+            squareForGame[9] = mark;
+            
+        else
+        {
+            Serial.print("Invalid move\n");
+            player--;
+        }
+         
+         board();
+         
+         i = checkwin();
+         
+         //win the game
+         if( i == 1)
+         {
+          Serial.print("You win the game!\n");
+          delay(10000000);
+          }
+          else if(i == 0)
+          {
+            Serial.print("Game draw");
+            delay(1000000);
+            }
+                serialFlush();
+                player++;
+    break;
+  }
+
+  }
+}
+
+/*******************************************************************
+FUNCTION TO DRAW BOARD OF TIC TAC TOE WITH PLAYERS MARK
+ ********************************************************************/
+
+
+void board()
+{
+    Serial.print("\n\n\tTic Tac Toe\n\n");
+
+    Serial.print("Player 1 (X)  -  Player 2 (O)\n\n\n");
+
+
+    Serial.print("     |     |     \n");
+    Serial.print("  ");
+    Serial.print(squareForGame[1]);
+    Serial.print("  |  ");
+    Serial.print(squareForGame[2]);
+    Serial.print("  |  ");
+    Serial.print(squareForGame[3]);
+    Serial.print(" \n");
+
+    Serial.print("_____|_____|_____\n");
+    Serial.print("     |     |     \n");
+    Serial.print("  ");
+    Serial.print(squareForGame[4]);
+    Serial.print("  |  ");
+    Serial.print(squareForGame[5]);
+    Serial.print("  |  ");
+    Serial.print(squareForGame[6]);
+    Serial.print(" \n");
+
+    Serial.print("_____|_____|_____\n");
+    Serial.print("     |     |     \n");
+
+    Serial.print("  ");
+    Serial.print(squareForGame[7]);
+    Serial.print("  |  ");
+    Serial.print(squareForGame[8]);
+    Serial.print("  |  ");
+    Serial.print(squareForGame[9]);
+    Serial.print(" \n");
+
+    Serial.print("     |     |     \n\n");
+}
+
+/*******************************************************************
+END OF PROJECT
+ ********************************************************************/
+
+/*
+Function to return game status
+1 for game is over with result
+-1 for game is in progress
+0 for game is over and no result
+ */
+ int checkwin()
+{
+    if (squareForGame[1] == squareForGame[2] && squareForGame[2] == squareForGame[3])
+        return 1;
+        
+    else if (squareForGame[4] == squareForGame[5] && squareForGame[5] == squareForGame[6])
+        return 1;
+        
+    else if (squareForGame[7] == squareForGame[8] && squareForGame[8] == squareForGame[9])
+        return 1;
+        
+    else if (squareForGame[1] == squareForGame[4] && squareForGame[4] == squareForGame[7])
+        return 1;
+        
+    else if (squareForGame[2] == squareForGame[5] && squareForGame[5] == squareForGame[8])
+        return 1;
+        
+    else if (squareForGame[3] == squareForGame[6] && squareForGame[6] == squareForGame[9])
+        return 1;
+        
+    else if (squareForGame[1] == squareForGame[5] && squareForGame[5] == squareForGame[9])
+        return 1;
+        
+    else if (squareForGame[3] == squareForGame[5] && squareForGame[5] == squareForGame[7])
+        return 1;
+        
+    else if (squareForGame[1] != '1' && squareForGame[2] != '2' && squareForGame[3] != '3' &&
+        squareForGame[4] != '4' && squareForGame[5] != '5' && squareForGame[6] != '6' && squareForGame[7] 
+        != '7' && squareForGame[8] != '8' && squareForGame[9] != '9')
+
+        return 0;
+    else
+        return  - 1;
+}
+
+void serialFlush(){
+  while(Serial.available() > 0) {
+    char t = Serial.read();
+  }
+}   
