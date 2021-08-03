@@ -1,0 +1,117 @@
+#include<Wire.h>
+
+char a[16],action;
+ int i=0;
+ int e = 0;
+ int b = 0;
+ int c = 0;
+ int d = 0;
+ int tran_e = 0;
+ int tran_b = 0;
+ int tran_c = 0;
+ int tran_d = 0;
+ int firstTime = true;
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  for(int i=0;i<16;i++)
+  a[i]='*';
+  a[0]='o';
+  print(a);
+  Serial.print("wait for player1 setting up the initial mine field for you\n");
+  Wire.begin(4);
+  Wire.onReceive(receiveEvent);
+  Wire.onRequest(requestEvent);
+}
+
+//player2void 
+void loop(){
+  if(firstTime == true && e!= 0)
+  {
+    Serial.print("Please enter four land mine's postion(1-14) for player1:\n");
+  serialFlush();
+  while(true){
+    if(Serial.available()>0){
+      tran_e = Serial.parseInt();
+      tran_b = Serial.parseInt();
+      tran_c = Serial.parseInt();
+      tran_d = Serial.parseInt();
+      break;
+      }
+      }
+  firstTime = false;
+  }
+ if(firstTime == false)
+ {
+  playGame();
+  }
+}
+
+void receiveEvent(int howMany) {
+e= Wire.read();
+  b=Wire.read();
+  c=Wire.read();
+  d=Wire.read();
+}
+void print(char a[])
+{
+    for(int i=0;i<16;i++){
+    if((i+1)%4==0)
+    Serial.println(a[i]);
+    else
+    Serial.print(a[i]);
+    }
+  }
+void requestEvent()
+{
+  Serial.println(tran_e);//test
+ Wire.write(tran_e);
+ Wire.write(tran_b);
+ Wire.write(tran_c);
+ Wire.write(tran_d);
+}
+void playGame()
+{
+  serialFlush();
+  Serial.print("game started!\n");
+     while(e != 0){
+  if(Serial.available()>0){
+  action=Serial.read();
+  if(action=='w'&&i>=4){
+  a[i]='*';
+  i-=4;
+  a[i]='o';
+  print(a);
+  }
+  if(action=='s'&&i<=11){
+    a[i]='*';
+    i+=4;
+    a[i]='o';
+    print(a);
+    }
+  if(action=='a'&&i!=0&&i!=4&&i!=8&&i!=12){
+    a[i]='*';
+    i-=1;
+    a[i]='o';
+    print(a);
+    }
+    if(action=='d'&&i!=3&&i!=7&&i!=11&&i!=15){
+    a[i]='*';
+    i+=1;
+    a[i]='o';
+    print(a);}
+    if(i==e||i==b||i==c||i==d){
+    Serial.print("you are a loser\n\n");
+    delay(1000000);}
+    if(i==15){
+    Serial.print("you win\n\n");
+    delay(1000000);}
+  }}
+}
+
+void serialFlush(){
+  while(Serial.available() > 0) {
+    char t = Serial.read();
+  }
+}   
